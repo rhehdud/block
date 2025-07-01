@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>TF.js Model Test</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0"></script>
+</head>
+<body>
+  <h2>모델 예측 결과:</h2>
+  <pre id="output">로딩 중...</pre>
+
+  <script>
+    async function runModel() {
+      const outputEl = document.getElementById("output");
+
+      try {
+        const model = await tf.loadLayersModel("./model.json");
+        outputEl.textContent = "✅ 모델 로드 완료\n";
+
+        const input = tf.zeros([1, 5, 4, 5]);  // ✅ 배치 포함
+        const prediction = model.predict(input);
+        const result = await prediction.data();
+
+        outputEl.textContent += "예측 결과:\n" + Array.from(result).map(x => x.toFixed(4)).join(", ");
+      } catch (err) {
+        outputEl.textContent = "❌ 에러 발생:\n" + err.message;
+      }
+    }
+
+    runModel();
+  </script>
+</body>
+</html>
